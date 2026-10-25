@@ -7,6 +7,15 @@ result of a piece of research, a report or a decision goes into the owner's Noti
 new note. Each note has two readers: the owner, who follows up on it, and a fresh session, which
 reads it and carries the work on from where it stopped. A note is a checkpoint.
 
+## Consent: only on the owner's word
+
+The agent goes to Notion only when the owner explicitly says so: no write, no addendum, no read.
+The trigger phrases below are that word. On its own initiative the agent may only **offer**: when
+a result is worth keeping, or an inbox `(notebook)` trace shows a note would help, it asks in one
+sentence ("shall I put this in the notebook?", "shall I look at the X note?") and acts on a yes.
+An offer is made once; left unanswered, it is not repeated and the work is not done. A yes covers
+that note only, not the next one.
+
 ## Trigger
 
 | The owner says | What happens |
@@ -95,6 +104,6 @@ they are presented as current.
 
 Nothing from `memory/secret/`, no key, password or token goes into a note. No third party's
 personal data (a student's grades, an ID number); anonymise it if it is needed. The notebook is
-the owner's private workspace: writing there needs no approval, but the tool never shares or
+the owner's private workspace: the owner's word, or a yes to an offer, is all the approval needed; the tool never shares or
 publishes a page, never edits the rest of the notebook and never deletes a note. A wrong note is
 corrected with `append`; if it has to go, the owner removes it.
