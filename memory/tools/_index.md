@@ -55,3 +55,8 @@ path here must exist. A tool without a trigger dies silently — that is why thi
 - `memory/tools/integrations/google/` — optional, read-first Google connectors (calendar, tasks,
   mail, drive). **Trigger:** only when the owner has configured credentials; see the directory's
   own README. Writing outward is never automatic.
+
+- `memory/tools/integrations/notion/` — optional Notion notebook: `notebook.py` `write`, `append`,
+  `read`, `list`; Markdown in, Markdown out, a `(notebook)` trace in the inbox. **Trigger:** the
+  owner says "take a note", "write it in the notebook", "look at that note"
+  (`memory/rules/notebook.md`).

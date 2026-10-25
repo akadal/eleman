@@ -215,12 +215,12 @@ its **trigger** (when to run it). Ask that file "what do I have?"; do not add to
 | consolidation / sleep run | memory/rules/consolidation.md |
 | schema · enum · budget · fact grammar question | memory/rules/format.md |
 | high-volume, low-judgement work (screening, scanning, summarising) | memory/rules/delegation.md |
+| "take a note" · "look at that note" | memory/rules/notebook.md |
 
-Keep this table complete as you add rule files. Routing keeps the router small at one real risk:
-**a trigger that never fires makes the capability die silently** — nothing errors, the work is just
-done incompletely. Three lint checks stand against that: *orphan rule* (every file under `rules/`
-is in this table), *orphan tool* (every script is in the tool index) and *shell syntax* (a hook
-that cannot be parsed does nothing and says nothing). Losing a capability quietly is a **bug**.
+Keep this table complete: **a trigger that never fires makes a capability die silently**, with no
+error, just work done incompletely. Three lint checks guard it: *orphan rule* (every `rules/` file
+is in this table), *orphan tool* (every script is in the tool index) and *shell syntax* (an
+unparsable hook does nothing and says nothing). Losing a capability quietly is a **bug**.
 
 ## 8. Naming and formatting (short)
 
@@ -256,9 +256,9 @@ that cannot be parsed does nothing and says nothing). Losing a capability quietl
 - Flow: at step 0 of a consolidation, whatever changed since the last fetch is appended to the inbox
   as a summary with a provenance trace (for example "(from calendar)"). No raw dumps. **Writing to
   an external system is never automatic.**
-- An optional, self-contained Google (Calendar + Tasks + Gmail) tap ships in
-  `memory/tools/integrations/google/`; see its README. It is off unless configured and has no send
-  capability by construction.
+- Optional integrations in `memory/tools/integrations/` (see each README) are off unless
+  configured: Google cannot send mail by construction; the Notion notebook writes at the owner's
+  word, only under its group page (`rules/notebook.md`).
 
 ## 11. Capability pool — working in other repositories
 
