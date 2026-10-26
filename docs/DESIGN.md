@@ -443,7 +443,7 @@ explicit request ("search the archive" → straight to semantic mode).
 | 0 | `MEMORY.md` is already loaded; on a memory task, read `state.md` (≤200) | — |
 | 1 | Pick a domain from the root table (no reading); if unsure, take the top two | — |
 | 2 | Read `_index.md` (≤500) | if the answer is in Hot or on a line, STOP |
-| 3 | Read at most 2 files (from the full path) | fact found and no detail requested → STOP |
+| 3 | 2 files expected, 5 allowed (from the full path); deepen until found | fact found and no detail requested → STOP |
 | 4 | Domain-scoped `rg -m 20`, with synonyms and other languages | a hit → go to that file |
 | 5 | If there is a detail signal ("what exactly did they say", "what is the source"), follow the provenance link to the archive file | — |
 | 6 | All missed → **"that isn't in my memory"** + the nearest partial match | — |

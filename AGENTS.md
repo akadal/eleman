@@ -151,11 +151,17 @@ memory/
 1. If this is a memory task, read `memory/state.md` first (the root is already loaded).
 2. Pick a domain from the root table → read that domain's `_index.md` (≤500 tokens) → if the answer
    is in `## Hot` or on an index line, **stop**.
-3. Read at most 2 files, via the **full path from the index** (never burn a Glob turn on a `[[wiki-link]]`).
+3. **Budget: 2 files expected, 5 allowed.** Read via the **full path from the index** (never burn
+   a Glob turn on a `[[wiki-link]]`). Stop at 2 once you have the answer; if you do not have it,
+   go deeper instead of giving up. A flat "at most 2" reads as permission to quit early: in
+   measurement, most wrong answers were "not in my memory" while the fact sat in an unread file.
 4. Miss → domain-scoped `rg -m 20 "<term>"`, trying synonyms and other languages your memory uses.
    A repo-wide search happens only with explicit cross-domain intent.
 5. Still a miss → say **"that isn't in my memory"**; abstention beats hallucination. Offer the
    nearest partial match.
+
+**Abstention threshold:** "that isn't in my memory" is only earned after the 5-file budget **and**
+one search turn are spent. Abstaining with budget left is not caution, it is quitting early.
 
 ## 5. Write protocol (summary — full version in docs/DESIGN.md §5)
 
