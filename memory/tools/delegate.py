@@ -128,14 +128,73 @@ def engines() -> dict:
             continue
         name = sec.split(":", 1)[1].strip()
         out.setdefault(name, {}).update({k: cp.get(sec, k) for k in cp.options(sec)})
-    return {k: v for k, v in out.items() if v.get("command") and v.get("args")}
+    return {k: v for k, v in out.items() if v.get("url") or (v.get("command") and v.get("args"))}
+
+
+def opt_in(spec: dict) -> bool:
+    """Pay-per-token engines run only when named with --engine; they never join the chain."""
+    return str(spec.get("opt_in", "")).lower() in ("1", "true", "yes")
 
 
 def chain() -> list:
     """Delegation order. Unknown names are dropped rather than failing the whole chain."""
     known = engines()
-    names = [x.strip() for x in role("chain").split(",") if x.strip() in known]
-    return names or sorted(known)[:1]
+    names = [x.strip() for x in role("chain").split(",")
+             if x.strip() in known and not opt_in(known[x.strip()])]
+    return names or [k for k in sorted(known) if not opt_in(known[k])][:1]
+
+
+TEXT_CAP, FILE_CAP = 600_000, 60_000
+
+
+def gather(cwd: Path) -> str:
+    """Text files under cwd as one body, for engines that cannot open files themselves."""
+    parts, total = [], 0
+    for f in sorted(cwd.rglob("*")):
+        if not f.is_file() or {".git", "node_modules", "secret"} & set(f.parts):
+            continue
+        try:
+            t = f.read_text(encoding="utf-8")[:FILE_CAP]
+        except (UnicodeDecodeError, OSError):
+            continue
+        if total + len(t) > TEXT_CAP:
+            parts.append(f"[delegate: text cap reached, {f.relative_to(cwd)} and later omitted]")
+            break
+        parts.append(f"=== {f.relative_to(cwd).as_posix()} ===\n{t}")
+        total += len(t)
+    return "\n\n".join(parts)
+
+
+def run_http(spec: dict, model: str, prompt: str, cwd: Path, limit: int):
+    """One call to an OpenAI-compatible chat endpoint (e.g. OpenRouter). No tools: the files
+    under cwd are sent as text. The usage line at the end shows tokens and cost when the
+    endpoint reports them, so a paid engine never spends silently."""
+    import json
+    import urllib.error
+    import urllib.request
+    key = os.environ.get(spec.get("key_env", ""), "")
+    if not key:
+        return 1, f"[delegate: {spec.get('key_env')} is not set (not configured)]"
+    body = {"model": model, "usage": {"include": True},
+            "messages": [{"role": "user", "content": f"{prompt}\n\n--- FILES ---\n{gather(cwd)}"}]}
+    if spec.get("provider_json"):
+        body["provider"] = json.loads(spec["provider_json"])
+    req = urllib.request.Request(spec["url"], data=json.dumps(body).encode("utf-8"),
+                                 headers={"Authorization": f"Bearer {key}",
+                                          "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=limit) as r:
+            out = json.load(r)
+    except TimeoutError:
+        return 124, f"[delegate: timed out after {limit}s]"
+    except urllib.error.HTTPError as e:
+        return 1, f"[delegate: HTTP {e.code}] {e.read().decode('utf-8', 'replace')[:300]}"
+    except urllib.error.URLError as e:
+        return 1, f"[delegate: network error, not available] {e.reason}"
+    text = (out.get("choices") or [{}])[0].get("message", {}).get("content") or ""
+    u = out.get("usage") or {}
+    return 0, (f"{text}\n[delegate: {u.get('prompt_tokens')}+{u.get('completion_tokens')} tokens, "
+               f"cost {u.get('cost')}]")
 
 
 def safe_path(p: Path) -> Path:
@@ -183,6 +242,8 @@ def infra_failure(code: int, text: str) -> bool:
 
 def run(name: str, spec: dict, model: str, prompt: str, cwd: Path, limit: int):
     """Run one engine; returns (code, raw output). Timeout is 124."""
+    if spec.get("url"):
+        return run_http(spec, model, prompt, cwd, limit)
     if not shutil.which(spec["command"]):
         return 127, f"[delegate: {spec['command']} is not installed (command not found)]"
     argv = [spec["command"]]

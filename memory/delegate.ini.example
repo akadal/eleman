@@ -58,3 +58,16 @@ model_advice = high
 # args = --model {model} --non-interactive {prompt}
 # model_grunt = qwen3-30b
 # model_advice = qwen3-235b
+
+# A pay-per-token engine over an OpenAI-compatible HTTP endpoint. opt_in = true keeps it out of
+# the chain entirely: it runs only when you name it (--engine openrouter), never as a silent
+# fallback when your subscriptions run out. It has no tools; the files you give it are sent as
+# text, and a usage line with tokens and cost is appended to every answer.
+# provider_json asks the router not to route to providers that keep or train on your data.
+# [engine:openrouter]
+# url = https://openrouter.ai/api/v1/chat/completions
+# key_env = OPENROUTER_API_KEY
+# opt_in = true
+# model_grunt = deepseek/deepseek-v4-flash
+# model_advice = deepseek/deepseek-v4-pro
+# provider_json = {"data_collection": "deny"}
