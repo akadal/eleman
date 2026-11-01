@@ -504,6 +504,15 @@ on the shelf:
 - **Filter mandatory:** the search tool requires a `--domain` flag; the unfiltered mode needs an
   explicit `--all` and its output is domain-labelled.
 
+**Implemented as the local-model retriever:** `memory/tools/memory-recall.py` (AGENTS.md §4),
+with four deviations, all to match what was measured. Store: plain-Python cosine over a stdlib
+`array` file instead of sqlite-vec (a 1.2 GB install bought nothing at this scale). Chunks: `## `
+blocks, 3,000 characters. L1 is embedded too: the measured 50% came from an index that included
+it, and in a no-navigation mode there is no other way to reach L1. No domain filter: the benchmark
+ran unfiltered and a question to a local model carries no domain. The measurement: on 50
+questions over a real memory, a 4B local model scored 16% navigating on its own, 36% navigating
+with every aid, 50% answering once from five retrieved chunks (34% with lexical retrieval).
+
 ---
 
 ## 8. Privacy and security

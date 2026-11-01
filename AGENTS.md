@@ -41,9 +41,9 @@ Do not end every message with a question — but if the answer would change the 
 hesitation; a good question beats a guess. Do not ask for routine approval; on low-risk work, just
 proceed.
 
-Keep it short. Unless the user asks for detail, answer in a few precise sentences. Evidence dumps,
-repeated command output, step-by-step narration and long tables are **on request**, never
-volunteered. Say the result, give the reason in one sentence, stop.
+Keep it short: a few precise sentences unless asked for detail. Evidence dumps, repeated command
+output, narration and long tables come **on request** only. Say the result, the reason in one
+sentence, stop.
 
 **Drip questions, do not batch them.** Even when `questions.md` has accumulated, surface **at most
 one question per session** — at a suitable moment, in one sentence. The rest waits in the file and
@@ -62,10 +62,9 @@ git pull --rebase --autostash origin main && sh memory/tools/sleep-check.sh
 Pull, because the user may have pushed from another machine. If the script prints `SLEEP DUE`,
 consolidate (§6) before starting the actual work.
 
-**Use `--rebase`, never `--ff-only`.** A failed push leaves an orphan commit and the branch
-diverges; `--ff-only` then **gives up** and the session reads stale files — worse than stopping,
-because nothing looks wrong. Our commits are append-only markdown on one branch, so rebasing is
-safe. If a push fails, rebase and retry once.
+**Use `--rebase`, never `--ff-only`:** after a failed push the branch diverges, and `--ff-only`
+**gives up**, leaving the session on stale files with nothing looking wrong. Append-only markdown
+on one branch rebases safely; if a push fails, rebase and retry once.
 
 **Staleness is never passed over in silence.** If the pull cannot be made to work at all, the copy
 is **stale**: treat everything you read as suspect, resolve the divergence before writing anything,
@@ -76,8 +75,7 @@ and tell the user in one sentence.
 When the user says some version of **"why didn't you do that / you forgot this / same mistake again
 / why is this still like that"**, that is negative feedback. Two separate things follow:
 
-1. **Fix the immediate work.** Whatever they asked for, do it (§0.5: reporting the problem and
-   leaving it is not enough). This always happens.
+1. **Fix the immediate work**, always (§0.5: reporting the problem and leaving it is not enough).
 2. **Drop a `(feedback)`-tagged block into the inbox — without classifying it.** Their sentence
    verbatim, one sentence on what actually happened, and the open question: *does this call for a
    structural update?*
@@ -100,9 +98,8 @@ follows from it — a README, a tracking table, an index, a script, a rule file,
 are brought in line with the source, never the other way round.
 
 Limits: what propagates is the *decision*, not your own rewrite of what the user wrote (§12 scope
-guard). The constitution is not overridden (invariant #10) — during a conversation you never fix
-`domains/`, `people/`, the root or `state.md`; the inconsistency goes to the inbox and is aligned at
-consolidation. Irreversible or outward-facing alignment (rewriting history, bulk deletion,
+guard). Invariant #10 holds: mid-conversation you never fix `domains/`, `people/`, the root or
+`state.md`; the inconsistency goes to the inbox and is aligned at consolidation. Irreversible or outward-facing alignment (rewriting history, bulk deletion,
 publishing) is still asked first. Report what you aligned in **one line**; never silently.
 
 ---
@@ -153,8 +150,8 @@ memory/
    is in `## Hot` or on an index line, **stop**.
 3. **Budget: 2 files expected, 5 allowed.** Read via the **full path from the index** (never burn
    a Glob turn on a `[[wiki-link]]`). Stop at 2 once you have the answer; if you do not have it,
-   go deeper instead of giving up. A flat "at most 2" reads as permission to quit early: in
-   measurement, most wrong answers were "not in my memory" while the fact sat in an unread file.
+   go deeper instead of giving up. A flat "at most 2" made models quit early: most wrong answers
+   were "not in my memory" with the fact in an unread file.
 4. Miss → domain-scoped `rg -m 20 "<term>"`, trying synonyms and other languages your memory uses.
    A repo-wide search happens only with explicit cross-domain intent.
 5. Still a miss → say **"that isn't in my memory"**; abstention beats hallucination. Offer the
@@ -162,6 +159,10 @@ memory/
 
 **Abstention threshold:** "that isn't in my memory" is only earned after the 5-file budget **and**
 one search turn are spent. Abstaining with budget left is not caution, it is quitting early.
+Optional Claude Code hooks enforce this and catch made-up paths (`tools/integrations/claude-code/`).
+
+**Local or weak model mode:** no navigation; the harness retrieves, the model answers once:
+`memory/tools/memory-recall.py --answer "<question>"` (4B model: navigating 36%, this 50%).
 
 ## 5. Write protocol (summary — full version in docs/DESIGN.md §5)
 
@@ -172,10 +173,9 @@ one search turn are spent. Abstaining with budget left is not caution, it is qui
 - Long raw content (a transcript, a document) goes straight into `memory/archive/<domain>/YYYY/`;
   the inbox gets a one- or two-sentence summary plus the path.
 - **Never** write to `domains/`, `people/`, `MEMORY.md` or `state.md` during interaction (invariant #10).
-- **Being told something is not being given a task.** When the user mentions a piece of work, the
-  default is to **capture it, not start it**: append to the inbox, and ask in one sentence if you
-  need to. "We'll do X at some point" is information; turning it into a plan or touching code
-  requires an explicit request.
+- **Being told something is not being given a task.** The default is to **capture it, not start
+  it**: append to the inbox, ask in one sentence if needed. "We'll do X at some point" is
+  information; a plan or a code change needs an explicit request.
 
 ## 6. Consolidation (opportunistic trigger; task definition in `rules/consolidation.md`)
 
@@ -188,15 +188,13 @@ machines keep (a) and (b); duplicating the schedule makes the collision below a 
 written after a daytime run would otherwise wait another day. Only an empty inbox or a fresh lock
 stops it (`sleep-check.sh --nightly`).
 
-Portability was the reason this was once a no-cron design, and it survives: the scheduler only
-calls a plain `sh` script, that script does no distilling (the rules stay here), and the harness
-command is swappable through `memory/.sleep-command`.
+The scheduler only calls a plain `sh` script that does no distilling (the rules stay here); the
+harness command is swappable through `memory/.sleep-command`.
 
-**Lock — multi-machine:** two machines consolidating at once distil the same logs twice and collide
-on the archive moves. The lock is shared through git: `memory/.sleep-lock` is committed and pushed
-when a run starts and deleted when it ends, and a lock older than 2 hours counts as a crashed run
-and is taken over. The check lives in `sleep-check.sh`, not in prose — while a fresh lock exists
-**no path** (manual, opportunistic or scheduled) starts a second run.
+**Lock — multi-machine:** two concurrent runs distil the same logs twice and collide on archive
+moves. `memory/.sleep-lock` is committed and pushed when a run starts and deleted when it ends; a
+lock older than 2 hours counts as crashed and is taken over. `sleep-check.sh` enforces it: while a
+fresh lock exists **no path** (manual, opportunistic or scheduled) starts a second run.
 
 Flow: pre-flight (clean tree → `pre-sleep` checkpoint commit) → LLM pass (triage → sort → merge →
 compress → resolve conflicts → refresh indexes and `state.md`) → `python3 memory/tools/lint.py`,
@@ -223,10 +221,10 @@ its **trigger** (when to run it). Ask that file "what do I have?"; do not add to
 | high-volume, low-judgement work (screening, scanning, summarising) | memory/rules/delegation.md |
 | "take a note" · "look at that note" | memory/rules/notebook.md |
 
-Keep this table complete: **a trigger that never fires makes a capability die silently**, with no
-error, just work done incompletely. Three lint checks guard it: *orphan rule* (every `rules/` file
-is in this table), *orphan tool* (every script is in the tool index) and *shell syntax* (an
-unparsable hook does nothing and says nothing). Losing a capability quietly is a **bug**.
+Keep this table complete: **a trigger that never fires makes a capability die silently**. Three
+lint checks guard it: *orphan rule* (every `rules/` file is in this table), *orphan tool* (every
+script is in the tool index), *shell syntax* (an unparsable hook does nothing and says nothing).
+Losing a capability quietly is a **bug**.
 
 ## 8. Naming and formatting (short)
 
@@ -243,9 +241,9 @@ unparsable hook does nothing and says nothing). Losing a capability quietly is a
 - `secret/` never enters consolidation, is never embedded, and only a human touches it. It is
   **gitignored by default** — see `memory/secret/README.md` before you change that.
 - **Remote hygiene.** This repository holds someone's private life. Before every push, check that
-  `origin` is the user's own private repository; if it still points at the upstream template, or at
-  anything they did not set up in `INSTALL.md`, **stop and ask**. If the repository is public,
-  personal memory does not go in it — say so plainly and stop.
+  `origin` is the user's own private repository; if it points at the upstream template or anything
+  not set up in `INSTALL.md`, **stop and ask**. A public repository never takes personal memory:
+  say so plainly and stop.
 - **Taking a key.** When a token or key is needed, the agent hands over the command and the owner
   enters the value with `memory/tools/secret-put.py` in their own terminal; no debate, no paste.
 - Deleting a secret means deleting it **from the whole git history**; removing a line is not enough.
@@ -273,10 +271,9 @@ unparsable hook does nothing and says nothing). Losing a capability quietly is a
 - `temp/` is gitignored, can be deleted at any moment, and is never committed here.
 - Before starting, read the target repository's own rules (AGENTS.md / CLAUDE.md / README) and
   follow them.
-- **Throwaway infrastructure is torn down when the job ends — you do not ask.** A scratch
-  repository, a test VM or container, an account opened for a dry run, a one-off script: whoever
-  created it removes it. If you lack the permission to delete it (for example a `gh` token
-  without the `delete_repo` scope), it goes on `todo.md` — it is never just left behind.
+- **Throwaway infrastructure is torn down when the job ends — you do not ask.** Whoever created a
+  scratch repository, test VM, dry-run account or one-off script removes it; lacking the
+  permission (a `gh` token without `delete_repo`), it goes on `todo.md`, never just left behind.
 
 ## 12. Working practices for larger tasks
 
@@ -290,14 +287,13 @@ For big coding or research tasks, to keep agent autonomy safe and to avoid *over
   holds the "what".
 - **Loop breaker.** On the same error twice in a row, stop struggling: break the loop and hand it
   to the user (`questions.md` or a message).
-- **Delegating bulk work outward.** Work high in volume and low in judgement (screening results,
-  reading mail, scanning code, batch summarising) leaves the main session: hand it to an external
-  agent CLI, keep only the answer, and log it. See `memory/rules/delegation.md`.
+- **Delegating bulk work outward.** Work high in volume and low in judgement (screening, reading
+  mail, scanning code, batch summarising) goes to an external agent CLI; keep only the answer and
+  log it (`memory/rules/delegation.md`).
 - **Adversarial review.** For risky changes, brief a sub-agent whose only job is to find weak
   points, security holes and logic errors; touch the main files only after that pass.
-- **The evolution contract.** The repository evolves on its own without losing its character or
-  over-engineering. The **never-lose** half is mechanical, with no tolerance (lint +
-  `sleep-audit.py` + append-only L2); the **evolution** half is free, since a new tool, rule file
-  or domain needs no permission round, only a trace. When a check blocks legitimate work,
-  **calibrate the check, do not curtail the work**. No capability may die quietly: when a rule
-  moves behind a trigger, the check that catches a *missed* trigger ships in the same change.
+- **The evolution contract.** The repository evolves without losing its character. The
+  **never-lose** half is mechanical, with no tolerance (lint + `sleep-audit.py` + append-only L2);
+  the **evolution** half is free: a new tool, rule file or domain needs a trace, not a permission
+  round. When a check blocks legitimate work, **calibrate the check, do not curtail the work**.
+  When a rule moves behind a trigger, the check that catches a *missed* trigger ships with it.

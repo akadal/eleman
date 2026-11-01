@@ -40,6 +40,10 @@ path here must exist. A tool without a trigger dies silently — that is why thi
   **Trigger:** the owner says the session is over ("wrap up", "that's a wrap", "stop"). Bind a
   slash command to it if your harness has them.
 - `memory/tools/golden-set.md` — the versioned question set; an old question is never removed.
+- `memory/tools/memory-recall.py` — recall without navigation: embeds memory with local bge-m3
+  (`memory/.index/`, incremental) and prints the 5 closest chunks; `--answer` has a local model
+  answer in one shot. Falls back to lexical retrieval without Ollama. **Trigger:** every memory
+  question in local or weak model mode (AGENTS.md §4).
 
 - `memory/tools/delegate.py` — hands bulk, low-judgement work to an external agent CLI. Roles
   are configuration (`chain`, `backup`; `ASSISTANT_DELEGATE_*` then `memory/delegate.ini`), so no
@@ -55,6 +59,10 @@ path here must exist. A tool without a trigger dies silently — that is why thi
 - `memory/tools/integrations/google/` — optional, read-first Google connectors (calendar, tasks,
   mail, drive). **Trigger:** only when the owner has configured credentials; see the directory's
   own README. Writing outward is never automatic.
+
+- `memory/tools/integrations/claude-code/` — optional hooks that enforce the read protocol: a
+  made-up memory path is sent back with the right file, an abstention without a search is sent
+  back once. **Trigger:** enabled once in `.claude/settings.json` (see its README).
 
 - `memory/tools/integrations/notion/` — optional Notion notebook: `notebook.py` `write`, `append`,
   `read`, `list`; Markdown in, Markdown out, a `(notebook)` trace in the inbox. **Trigger:** the
