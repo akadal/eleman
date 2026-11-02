@@ -209,7 +209,7 @@ adding an alias, any change that drops content without a source, opening or clos
 
 **Tool detail is not here: `memory/tools/_index.md`** — what each tool does and, more importantly,
 its **trigger** (when to run it). Ask that file "what do I have?"; do not add tool lines here
-(invariant #7). Lint enforces it: a tool missing from the index is an error.
+(invariant #7).
 
 **Rule routing table.** When the trigger on the left appears, the file on the right is read
 **before starting the actual work**. This is a gate, not a suggestion:
@@ -220,6 +220,7 @@ its **trigger** (when to run it). Ask that file "what do I have?"; do not add to
 | schema · enum · budget · fact grammar question | memory/rules/format.md |
 | high-volume, low-judgement work (screening, scanning, summarising) | memory/rules/delegation.md |
 | "take a note" · "look at that note" | memory/rules/notebook.md |
+| literature review · gap analysis | memory/rules/literature.md |
 
 Keep this table complete: **a trigger that never fires makes a capability die silently**. Three
 lint checks guard it: *orphan rule* (every `rules/` file is in this table), *orphan tool* (every

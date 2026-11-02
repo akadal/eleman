@@ -167,7 +167,8 @@ Close with a short message, not a manual. It needs to carry four things:
 3. **Everything is theirs, in plain markdown, in git.** Nothing is hidden. "What do you know about
    me?" is answerable at any time, and so is "where did you get that?".
 4. **Optional extras exist, and they can wait**: external read taps
-   (`memory/tools/integrations/`), the golden-set evaluation (`memory/tools/golden-set.md`), and
+   (`memory/tools/integrations/`), the WoS + Scopus literature search for academic work
+   (`memory/rules/literature.md`), the golden-set evaluation (`memory/tools/golden-set.md`), and
    mechanism updates from upstream (`docs/UPGRADING.md`).
 
 Do not offer to configure the optional pieces now. Day one is for capture.

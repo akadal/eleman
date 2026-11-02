@@ -56,6 +56,12 @@ path here must exist. A tool without a trigger dies silently — that is why thi
 - `memory/tools/secret-put.py` — the owner types a key into their own terminal; it lands in
   `secret/<name>.json`. **Trigger:** every time a token or key is needed from the owner.
 
+- `memory/tools/literature-fetch.py` — bridge to a WoS + Scopus literature search: clones the
+  toolkit repository under `temp/`, copies the keys from `secret/literature.json` into its
+  `.env`, runs it in its own venv, prints the output paths. Not a crawler. **Trigger:** any
+  academic work that rests on the literature (`memory/rules/literature.md`); `--doctor` once
+  per machine.
+
 - `memory/tools/integrations/google/` — optional, read-first Google connectors (calendar, tasks,
   mail, drive). **Trigger:** only when the owner has configured credentials; see the directory's
   own README. Writing outward is never automatic.
