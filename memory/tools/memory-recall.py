@@ -24,7 +24,7 @@ Usage:
   python3 memory/tools/memory-recall.py "What is Alex's thesis about?"
   python3 memory/tools/memory-recall.py --answer "..." [--model gemma3:4b]
   python3 memory/tools/memory-recall.py --build      # refresh the index only
-Dependencies: stdlib. Environment: OLLAMA_URL (default localhost), ASSISTANT_LOCAL_MODEL.
+Dependencies: stdlib. Environment: OLLAMA_URL (default 127.0.0.1), ASSISTANT_LOCAL_MODEL.
 """
 from __future__ import annotations
 
@@ -49,7 +49,9 @@ ROOT = Path(__file__).resolve().parent.parent          # memory/
 INDEX = ROOT / ".index"
 META = INDEX / "recall-meta.json"
 VECTORS = INDEX / "recall-vec.bin"
-OLLAMA = os.environ.get("OLLAMA_URL", "http://localhost:11434").rstrip("/")
+# 127.0.0.1, not localhost: on Windows, localhost tries IPv6 (::1) first, and since Ollama
+# listens on IPv4 only, every connection loses 2 s (measured 2.09 s vs 0.01 s).
+OLLAMA = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434").rstrip("/")
 EMBED_MODEL = "bge-m3"          # docs/DESIGN.md §7; changing it rebuilds the index
 LOCAL_MODEL = os.environ.get("ASSISTANT_LOCAL_MODEL", "gemma3:4b")
 K = 5                           # the benchmark's vector arm used k=5
@@ -171,8 +173,8 @@ def load_index() -> tuple[dict, array]:
 
 
 def refresh_index(quiet: bool = False) -> tuple[dict, array]:
-    """Re-embeds changed files and drops deleted ones. The first build takes minutes (about 7 for
-    4,200 chunks on a consumer GPU); afterwards only changed files are embedded."""
+    """Re-embeds changed files and drops deleted ones. The first build takes about 2 minutes for
+    4,200 chunks on a consumer GPU; afterwards only changed files are embedded."""
     meta, vec = load_index()
     old, dim = meta["files"], meta.get("dim", 0)
     new_meta: dict = {}
@@ -193,13 +195,17 @@ def refresh_index(quiet: bool = False) -> tuple[dict, array]:
     if total and not quiet:
         warn(f"index: embedding {total} chunks from {len(todo)} files...")
     t0 = time.time()
+    # Chunks are embedded in batches of 32 regardless of file boundaries: one request per file
+    # meant hundreds of requests, most of them half-empty batches of one or two chunks.
+    start = len(new_vec) // dim if dim else 0
     for rel, cs in todo:
-        if not cs:
-            continue
-        vv = [unit(v) for v in embed(cs)]
-        dim = dim or len(vv[0])
-        new_meta[rel] = {"hash": new_meta[rel]["hash"], "first": len(new_vec) // dim, "chunks": cs}
-        for v in vv:
+        new_meta[rel] = {"hash": new_meta[rel]["hash"], "first": start, "chunks": cs}
+        start += len(cs)
+    flat = [c for _, cs in todo for c in cs]
+    for i in range(0, len(flat), 32):
+        for v in embed(flat[i:i + 32]):
+            v = unit(v)
+            dim = dim or len(v)
             new_vec.extend(v)
     if todo or set(old) != set(new_meta):
         INDEX.mkdir(parents=True, exist_ok=True)
