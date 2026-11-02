@@ -21,8 +21,8 @@ Keys (the owner types them in their own terminal, AGENTS.md section 9):
   python memory/tools/secret-put.py literature wos_api_key scopus_api_key
 Optional fields: scopus_insttoken, unpaywall_email.
 
-The toolkit repository is private by default; the owner needs read access from its
-maintainer. Point elsewhere with ASSISTANT_LITERATURE_REPO.
+The toolkit repository is public (MIT), so no access step is needed. Point elsewhere with
+ASSISTANT_LITERATURE_REPO.
 
 Usage:
   python memory/tools/literature-fetch.py --doctor
@@ -90,8 +90,8 @@ def prepare_clone(dry=False):
         CLONE.parent.mkdir(parents=True, exist_ok=True)
         print(f"no clone yet, fetching: {REMOTE}")
         if run(["git", "clone", REMOTE, str(CLONE)])[0]:
-            die("clone failed. The toolkit repository is private: the owner needs read access "
-                "from its maintainer, and git must be signed in to that GitHub account.")
+            die("clone failed: check the network and that git runs (`git --version`). "
+                f"The repository is {REMOTE}.")
         return
     if dry:
         print(f"[dry-run] git -C {CLONE} pull --ff-only")

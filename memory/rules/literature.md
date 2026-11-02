@@ -14,16 +14,21 @@ that do not exist; a web search misses most of what the indexes hold. One comman
 python memory/tools/literature-fetch.py --topic "<topic>" --years 2020-2026 --max 50
 ```
 
-The script is a **bridge, not a crawler**. It clones the toolkit repository under
-`temp/literature-review` (AGENTS.md section 11), copies the keys from `memory/secret/literature.json`
-into its `.env`, runs it in its own venv and prints the full paths of the outputs. No search tool
-is ever written in this repository; a missing feature becomes a flag on the bridge or a fix in the
-toolkit repository.
+The script is a **bridge, not a crawler**. It clones the public toolkit repository
+`akadal/literature-review` (MIT) under `temp/literature-review` (AGENTS.md section 11), copies the
+keys from `memory/secret/literature.json` into its `.env`, runs it in its own venv and prints the
+full paths of the outputs. No search tool is ever written in this repository; a missing feature
+becomes a flag on the bridge or a fix in the toolkit repository.
+
+Do not wait to be asked twice: when the trigger above appears, the search is the first move, not
+an offer. In Claude Code the skill in `.claude/skills/literature/` fires on its own; elsewhere the
+routing table in AGENTS.md section 7 brings you here.
 
 First use, once per machine: `--doctor` checks the clone, the keys and one live call per API.
 If the keys file is missing, hand the owner the command and nothing else (AGENTS.md section 9):
-`python memory/tools/secret-put.py literature wos_api_key scopus_api_key`. If the clone fails,
-the owner lacks read access to the toolkit repository: say so in one sentence.
+`python memory/tools/secret-put.py literature wos_api_key scopus_api_key`. Scopus may refuse a
+bare key off campus (401 with a correct key): the owner asks the library for an institution
+token and stores it as the `scopus_insttoken` field with the same command.
 
 ## Which index for what
 
