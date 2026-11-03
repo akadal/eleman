@@ -278,7 +278,10 @@ def md_blocks(md: str) -> list[dict]:
         m = re.match(r"^(#{1,6})\s+(.*)$", st)
         if m:
             flush(); last_item = None
-            out.append(block(f"heading_{min(len(m.group(1)), 3)}", m.group(2).strip().rstrip("#").strip()))
+            # A closing "#" run is decoration only when preceded by whitespace (CommonMark);
+            # a plain rstrip("#") turned the heading "## C#" into "C" (issue #1).
+            out.append(block(f"heading_{min(len(m.group(1)), 3)}",
+                             re.sub(r"\s+#+$", "", m.group(2).strip()).strip()))
             i += 1
             continue
 
