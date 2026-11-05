@@ -12,6 +12,7 @@
   <a href="LICENSE"><img alt="MIT licence" src="https://img.shields.io/badge/licence-MIT-blue.svg"></a>
   <img alt="stdlib only" src="https://img.shields.io/badge/dependencies-none-brightgreen.svg">
   <img alt="works with any agent" src="https://img.shields.io/badge/harness-agent--agnostic-8a2be2.svg">
+  <a href="https://doi.org/10.5281/zenodo.23975338"><img alt="DOI" src="https://zenodo.org/badge/DOI/10.5281/zenodo.23975338.svg"></a>
 </p>
 
 ---
@@ -174,6 +175,17 @@ repository. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
 The bar for a new feature is the YAGNI list in [`docs/DESIGN.md`](docs/DESIGN.md) §11. This project
 has said no to knowledge graphs, observer daemons, importance-decay functions and due-date tracking
 on purpose. If a proposal is on that list, it needs to explain what changed.
+
+## Citing eleman
+
+If eleman helped your work, please cite it. The DOI below covers every version, so all citations
+stay on one record; name the version you used in your text.
+
+> Akadal, E. (2026). *eleman: A personal memory core for AI assistants* [Computer software].
+> Zenodo. https://doi.org/10.5281/zenodo.23975338
+
+BibTeX and other formats come from the "Cite this repository" button on the GitHub page, which
+reads [`CITATION.cff`](CITATION.cff).
 
 ## Licence
 

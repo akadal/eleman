@@ -14,6 +14,7 @@ abstract: >-
   inbox and is distilled into small, budgeted domain files by a periodic
   consolidation run. It needs no service, database or API key, and works with
   any agent that can read files.
+doi: 10.5281/zenodo.23975338
 repository-code: "https://github.com/akadal/eleman"
 url: "https://eleman.akadal.tr"
 license: MIT
