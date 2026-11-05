@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use eleman, please cite it as below."
+type: software
+title: "eleman: a personal memory core for AI assistants"
+authors:
+  - family-names: Akadal
+    given-names: Emre
+    orcid: "https://orcid.org/0000-0001-6817-0127"
+    affiliation: "Istanbul University"
+abstract: >-
+  eleman is a repository that an AI assistant reads and writes as its long-term
+  memory: plain markdown files, a directory convention, a few standard-library
+  scripts and git underneath. New information enters through an append-only
+  inbox and is distilled into small, budgeted domain files by a periodic
+  consolidation run. It needs no service, database or API key, and works with
+  any agent that can read files.
+repository-code: "https://github.com/akadal/eleman"
+url: "https://eleman.akadal.tr"
+license: MIT
+keywords:
+  - agent memory
+  - AI assistants
+  - large language models
+  - context window
+  - personal knowledge management
+  - markdown
