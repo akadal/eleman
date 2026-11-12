@@ -22,7 +22,9 @@ People and organisations: memory/people/_index.md
    "Open/TODO" line in a dated document is a snapshot, not live truth; never answer from one
    file alone. **An external task or calendar list is a snapshot too:** never build an
    "outstanding work" list from it without checking it against the inbox first — today's log
-   may already say the task is done.
+   may already say the task is done. The same applies when you **build a plan**: on a project
+   that runs across several sessions, never assemble the work list from a single source —
+   scan every inbox file of that day for the project's name.
 2. If a person or organisation is involved, check the alias table in memory/people/_index.md.
 3. On a miss, search domain-scoped: `rg -m 20 "<term>" -g 'memory/domains/<d>/**'`
    (try the other languages this memory uses). Repo-wide search only with cross-domain intent.
