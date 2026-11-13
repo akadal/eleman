@@ -21,5 +21,5 @@ Format, one line each: `name — aliases — domains — path`
        system can make, and lint cannot spot it afterwards — everything still looks structurally valid.
      - Namesakes get a distinguishing suffix in the file name (alex-rivera-neighbour vs
        alex-rivera-colleague); the real spelling lives in `name`.
-     - Budget: 2,000 characters, ceiling. When it no longer fits, that is a signal to check whether
+     - Budget: 2,900 characters, ceiling (`people_index` in memory/rules/format.md). When it no longer fits, that is a signal to check whether
        rarely-touched entities should be marked `access: rare`. -->

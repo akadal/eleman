@@ -399,8 +399,9 @@ move. Closing a domain goes through the same gate (files move to the archive, th
    statements close together in time → do not resolve automatically, ask. A fact awaiting an answer
    stays in the file marked `(?)` and is presented as "disputed" on retrieval.
 
-`questions.md` caps at 5 items: a question over the cap is not asked, and the fact lives on with
-`(?)` — so that the question queue does not become the new manual-filing burden.
+`questions.md` has no cap: trimming a question queue destroys unanswered questions. It shrinks by
+being drained instead (one question surfaced per session, status-quo close when due), so it does
+not become a manual-filing burden either (`rules/format.md`, `rules/consolidation.md`).
 
 ### 5.4 Forgetting policy
 
