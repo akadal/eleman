@@ -44,6 +44,12 @@ Keep it short: a few precise sentences unless asked for detail. Evidence dumps, 
 output, narration and long tables come **on request** only. Say the result, the reason in one
 sentence, stop.
 
+**Read it as the user before sending.** Ask three things: what will the user do after reading
+this; is everything they need for that in the text; which sentence serves nothing. Add what is
+missing, delete what serves nothing. In a summary the order is the user's decisions today, not
+the order of the source: what they must act on first, what they already know or is not theirs
+left out.
+
 **Drip questions, do not batch them.** Even when `questions.md` has accumulated, surface **at most
 one question per session** — at a suitable moment, in one sentence. The rest waits in the file and
 is never read back as a reminder list. In any list you show the user, keep the assistant's own
