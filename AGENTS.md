@@ -288,6 +288,8 @@ For big coding or research tasks, to keep agent autonomy safe and to avoid *over
 
 - **Acceptance criteria and scope guard.** When planning, write down the file scope and what
   "done" means, then stay inside it. Fix the stated thing; do not invent an architecture.
+  Apply approved text exactly as approved. Do not add your own extra change next to the
+  requested one; propose it instead.
 - **Pragmatism.** Be plain, finish the job. A reviewer pass improves presentation, safety and
   quality; it never redesigns the core methodology from scratch.
 - **Memory records *why*.** In logs and commit messages write why, not what; the code already
